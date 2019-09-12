@@ -3326,10 +3326,6 @@ main {
   padding-bottom: 0;
 }
 
-#add_website, #add_password_type {
-  border-radius: 20px;
-}
-
 .modal_select_form_label {
   line-height: 40px;
   margin-right: 3rem;
@@ -6400,4 +6396,21 @@ input:-webkit-autofill {
       height: 1370px !important;
     }
   }
+}
+
+
+.dropdown-menu {
+    border-radius: .75rem;
+        position: absolute;
+    will-change: transform;
+    top: 0px;
+    left: 0px;
+    transform: translate3d(0px, -198px, 0px);
+    width: 100%;
+}
+#add_password_type, #add_password_type .dropdown-toggle,
+#add_website, #add_website .dropdown-toggle {
+  width: 150px;
+  margin-left: auto;
+  margin-right: 30%;
 }

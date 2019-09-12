@@ -12,7 +12,11 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu,
 } from "reactstrap";
 import ReactTable from "react-table";
 import {
@@ -187,14 +191,46 @@ export default class extends Component {
     super(props);
     this.state = {
       editmodal: false,
+      ispasswordtype: false,
+      iswebsite: false,
+      passwordtype: 'Generic',
+      website: 'Tripadvisor'
     };
 
     this.edittoggle = this.edittoggle.bind(this);
+    this.togglepasswordtype = this.togglepasswordtype.bind(this);
+    this.togglewebsite = this.togglewebsite.bind(this);
+
+    this.changepasswordtype = this.changepasswordtype.bind(this);
+    this.changewebsite = this.changewebsite.bind(this);
+
   }
   edittoggle() {
     this.setState({
       editmodal: !this.state.editmodal
     });
+  }
+  togglepasswordtype() {
+    this.setState(prevState => ({
+      ispasswordtype: !prevState.ispasswordtype
+    }));
+  }
+  togglewebsite() {
+    this.setState(prevState => ({
+      iswebsite: !prevState.iswebsite
+    }));
+  }
+  changepasswordtype(event) {
+    let currentpasswordtype = event.target.value;
+    this.setState(prevState => ({
+      passwordtype: currentpasswordtype
+    }));
+  }
+  changewebsite(event) {
+    let currentwebsite = event.target.value;
+    this.setState(prevState => ({
+      website: currentwebsite
+    }));
   }
   render() {
     return (
@@ -231,35 +267,65 @@ export default class extends Component {
                     <AvForm className="mb-5 row">
                     
                     <ModalBody>
+                    
                         <Colxx sm={12}>
                           <AvGroup className="modal_select_form_group">
                             <Label className="av-label modal_select_form_label" for="add_password_type">
                               Password Type
                             </Label>
-                            <AvField type="select" name="select" id="add_password_type">
-                              <option>Generic</option>
-                              <option>Google Auth</option>
-                              <option>Facebook Auth</option>
-                            </AvField>
-                            <AvFeedback>
-                              Password Type is required.
-                            </AvFeedback>
+                            <Dropdown
+                                isOpen={this.state.ispasswordtype}
+                                toggle={this.togglepasswordtype}
+                                
+                                className="mb-5"
+                                id="add_password_type"
+                              >
+                              <DropdownToggle caret color="secondary" outline>
+                                {this.state.passwordtype}
+                              </DropdownToggle>
+                              <DropdownMenu>
+                                <DropdownItem value="Generic" onClick={this.changepasswordtype}>
+                                  Generic
+                                </DropdownItem>
+                                <DropdownItem divider />
+                                <DropdownItem value="Google Auth" onClick={this.changepasswordtype}>
+                                  Google Auth
+                                </DropdownItem>
+                                <DropdownItem value="Facebook Auth" onClick={this.changepasswordtype}>
+                                  Facebook Auth
+                                </DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
                           </AvGroup>
                         </Colxx>
 
                         <Colxx sm={12}>
-                          <AvGroup className="modal_select_form_group">
+                          <AvGroup className="modal_select_form_group ">
                             <Label className="av-label modal_select_form_label" for="add_website">
                               Website
                             </Label>
-                            <AvField type="select" name="select" id="add_website">
-                              <option>Tripadvisor</option>
-                              <option>Yelp</option>
-                              <option>eBay</option>
-                            </AvField>
-                            <AvFeedback>
-                              Password Type is required.
-                            </AvFeedback>
+                            <Dropdown
+                                isOpen={this.state.iswebsite}
+                                toggle={this.togglewebsite}
+                                
+                                className="mb-5"
+                                id="add_website"
+                              >
+                              <DropdownToggle caret color="secondary" outline>
+                                {this.state.website}
+                              </DropdownToggle>
+                              <DropdownMenu>
+                                <DropdownItem value="Tripadvisor" onClick={this.changewebsite}>
+                                  Tripadvisor
+                                </DropdownItem>
+                                <DropdownItem value="Yelp" onClick={this.changewebsite}>
+                                  Yelp
+                                </DropdownItem>
+                                <DropdownItem value="eBay" onClick={this.changewebsite}>
+                                  eBay
+                                </DropdownItem>
+                              </DropdownMenu>
+                            </Dropdown>
                           </AvGroup>
                         </Colxx>
                         <Colxx sm={12}>
