@@ -2,6 +2,9 @@
 export const CHANGE_LOCALE = 'CHANGE_LOCALE';
 
 /* AUTH */
+export const GET_USER_LIST = 'GET_USER_LIST';
+export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
+
 export const LOGIN_USER = 'LOGIN_USER';
 export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 export const REGISTER_USER = 'REGISTER_USER';

@@ -12,16 +12,29 @@ class LoginLayout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "demo@gogo.com",
-      password: "gogo123"
+      email: "",
+      password: ""
     };
+    this.changepassword = this.changepassword.bind(this);
+    this.changeemail = this.changeemail.bind(this);
   }
   onUserLogin() {
     if (this.state.email !== "" && this.state.password !== "") {
       this.props.loginUser(this.state, this.props.history);
     }
   }
-
+  changepassword(event) {
+    let currentpassword = event.target.value;
+    this.setState(prevState => ({
+      password: currentpassword
+    }));
+  }
+  changeemail(event) {
+    let currentemail = event.target.value;
+    this.setState(prevState => ({
+      email: currentemail
+    }));
+  }
   componentDidMount() {
     document.body.classList.add("background");
   }
@@ -58,14 +71,14 @@ class LoginLayout extends Component {
                     </CardTitle>
                     <Form>
                       <Label className="form-group has-float-label mb-4">
-                        <Input type="email" defaultValue={this.state.email} />
+                        <Input type="email" value={this.state.email} onChange={this.changeemail}/>
                         <IntlMessages id="user.email" />
                       </Label>
                       <Label className="form-group has-float-label mb-4">
-                        <Input type="password" />
+                        <Input type="password" value={this.state.password}  onChange={this.changepassword}/>
                         <IntlMessages
                           id="user.password"
-                          defaultValue={this.state.password}
+                          
                         />
                       </Label>
                       <div className="d-flex justify-content-between align-items-center">
