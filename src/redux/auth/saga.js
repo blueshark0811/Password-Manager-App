@@ -14,7 +14,7 @@ import {
     getUserlistSuccess
 } from './actions';
 import axios from 'axios';
-const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:4040' : ''
+const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:4040' : 'http://45.63.27.167:4040'
 
 const loginWithEmailPasswordAsync = async (email, password) =>
     await auth.signInWithEmailAndPassword(email, password)
@@ -25,7 +25,7 @@ const loginWithEmailPasswordAsync = async (email, password) =>
 
 function* loginWithEmailPassword({ payload }) {
     const { email, password } = payload.user;
-    const { history } = payload;
+    const { history } = payload;D
     try {
         // const loginUser = yield call(loginWithEmailPasswordAsync, email, password);
         console.log(email, password)
