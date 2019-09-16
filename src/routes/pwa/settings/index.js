@@ -31,7 +31,9 @@ import { Colxx, Separator } from "Components/CustomBootstrap";
 import DataTablePagination from "Components/DataTables/pagination";
 import { 
   registerUser,
-  getUserlist
+  getUserlist,
+  updateUser,
+  deleteUser
 } from "Redux/actions";
 
 const dataTableData = [
@@ -54,40 +56,12 @@ const dataTableData = [
     "website": "Quandoo"
   },
 ];
-const dataTableColumns = [
-  {
-    Header: "Location",
-    accessor: "location",
-    Cell: props => <p className="list-item-heading">{props.value}</p>
-  },
-  {
-    Header: "Username",
-    accessor: "username",
-    Cell: props => <p className="text-muted">{props.value}</p>
-  },
-  {
-    Header: "Password",
-    accessor: "password",
-    Cell: props => <p className="text-muted">*************</p>
-  },
-  {
-    Header: "Website",
-    accessor: "website",
-    Cell: props => <p className="text-muted">{props.value}</p>
-  },
-  {
-    Header: '',
-    Cell: Props => 
-    <div>
-      <Button color='' className="action-button"><i className='simple-icon-pencil'></i></Button>
-      <Button color='' className="action-button"><i className='simple-icon-trash'></i></Button>
-    </div>
-  }
-];
+let  dataTableColumns;
 class SettingsLayout extends Component {
    constructor(props) {
     super(props);
     this.state = {
+      deletemodal: false,
       editmodal: false,
       ispasswordtype: false,
       iswebsite: false,
@@ -96,10 +70,12 @@ class SettingsLayout extends Component {
       username: '',
       password: '',
       location: '',
+      _id: '',
       data: [],
-      loading: true
+      loading: true,
+      modaltype: ''
     };
-    this.createUser = this.createUser.bind(this);
+    this.submitUser = this.submitUser.bind(this);
     this.edittoggle = this.edittoggle.bind(this);
     this.togglepasswordtype = this.togglepasswordtype.bind(this);
     this.togglewebsite = this.togglewebsite.bind(this);
@@ -109,12 +85,78 @@ class SettingsLayout extends Component {
     this.changepassword = this.changepassword.bind(this);
     this.changeusername = this.changeusername.bind(this);
     this.changelocation = this.changelocation.bind(this);
-    this.props.getUserlist();
-  }
+    this.onupdate = this.onupdate.bind(this);
+    this.ondelete = this.ondelete.bind(this);
 
-  createUser() {
+    this.deletepassword = this.deletepassword.bind(this);
+    this.deletetoggle = this.deletetoggle.bind(this);
+    this.props.getUserlist();
+
+    dataTableColumns = [
+        {
+          Header: "Location",
+          accessor: "location",
+          Cell: props => <p className="list-item-heading">{props.value}</p>
+        },
+        {
+          Header: "Username",
+          accessor: "username",
+          Cell: props => <p className="text-muted">{props.value}</p>
+        },
+        {
+          Header: "Password",
+          accessor: "password",
+          Cell: props => <p className="text-muted">*************</p>
+        },
+        {
+          Header: "Website",
+          accessor: "website",
+          Cell: props => <p className="text-muted">{props.value}</p>
+        },
+        {
+          Header: '',
+          accessor: '_id',
+          Cell: props => 
+          <div>
+            <Button color='' className="action-button" onClick={()=>this.onupdate(props.value)}><i className='simple-icon-pencil'></i></Button>
+            <Button color='' className="action-button" onClick={()=>this.ondelete(props.value)}><i className='simple-icon-trash'></i></Button>
+          </div>
+        }
+    ];
+  }
+  ondelete(id) {
+    
+    this.setState({
+      deletemodal: true,
+      _id: id
+    });
+  }
+  onupdate(id) {
+    let selectedUser;
+    for(let index in this.state.data)
+      if(this.state.data[index]._id == id) {
+        selectedUser = this.state.data[index];
+        break;
+      }
+    console.log(selectedUser)
+    this.setState({
+      editmodal: !this.state.editmodal,
+      modaltype: 'update',
+      password: selectedUser.password,
+      passwordtype: selectedUser.passwordtype,
+      website: selectedUser.website,
+      username: selectedUser.username,
+      location: selectedUser.location,
+      _id: selectedUser._id
+    });
+  }
+  submitUser() {
     if(this.state.location != '' && this.state.password != '' && this.state.username != ''){
-      this.props.registerUser(this.state, this.props.history);
+      if(this.state.modaltype == 'add')
+        this.props.registerUser(this.state, this.props.history);
+      else
+        this.props.updateUser(this.state);
+      
       this.setState({
         editmodal: !this.state.editmodal
       });
@@ -123,7 +165,27 @@ class SettingsLayout extends Component {
       
   edittoggle() {
     this.setState({
-      editmodal: !this.state.editmodal
+      editmodal: !this.state.editmodal,
+      modaltype: 'add',
+      passwordtype: 'Generic',
+      website: 'Tripadvisor',
+      username: '',
+      password: '',
+      location: '',
+    });
+  }
+  deletetoggle() {
+    this.setState({
+      deletemodal: !this.state.deletemodal,
+      _id: ''
+    });
+  }
+  deletepassword() {
+    console.log('here is selectedpassword', this.state._id);
+    this.props.deleteUser(this.state._id, this.props.history)
+    this.setState({
+      deletemodal: !this.state.deletemodal,
+      _id: ''
     });
   }
   togglepasswordtype() {
@@ -170,6 +232,7 @@ class SettingsLayout extends Component {
     }));
   }
   componentWillReceiveProps(nextProps) {
+    console.log(nextProps.userList);
     this.setState(prevState => ({
       data: nextProps.userList,
       loading: false
@@ -203,9 +266,26 @@ class SettingsLayout extends Component {
                 <Button color="primary" className="mt-2" onClick={this.edittoggle}>
                     Add New Password
                 </Button>
+                <Modal isOpen={this.state.deletemodal} toggle={this.deletetoggle}>
+                    <ModalHeader toggle={this.deletetoggle}>
+                      Delete Password
+                    </ModalHeader>
+                    <ModalBody>
+                      Are you sure to delete this password?
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="primary" onClick={this.deletepassword}>
+                        Ok
+                      </Button>{" "}
+                      <Button color="secondary" onClick={this.deletetoggle}>
+                        Cancel
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
+
                 <Modal isOpen={this.state.editmodal} toggle={this.edittoggle}>
                     <ModalHeader toggle={this.edittoggle}>
-                      Add Password
+                      {this.state.modaltype == 'add' ? 'Add Password': 'Update Password'}
                     </ModalHeader>
                     <AvForm className="mb-5 row">
                     
@@ -287,7 +367,7 @@ class SettingsLayout extends Component {
                           <AvGroup>
                             <Label className="av-label" for="add_password">
                               Password
-                            </Label>
+                            </Label>w
                             
                             <AvInput name="testit" type="password" id="add_password" onChange={this.changepassword} value={this.state.password} required />
                             <AvFeedback>
@@ -310,8 +390,8 @@ class SettingsLayout extends Component {
 
                         <Colxx sm={12}>
                           <FormGroup>
-                            <Button color="primary" id="forms.submit" onClick={this.createUser}>
-                              Add
+                            <Button color="primary" id="forms.submit" onClick={this.submitUser}>
+                              {this.state.modaltype == 'add' ? 'Add': 'Update'}
                             </Button>{" "}
                             <Button color="secondary" onClick={this.edittoggle}>
                               Cancel
@@ -341,6 +421,8 @@ export default connect(
   mapStateToProps,
   {
     registerUser,
-    getUserlist
+    getUserlist,
+    updateUser,
+    deleteUser
   }
 )(SettingsLayout);
