@@ -51,7 +51,7 @@ class SettingsLayout extends Component {
       ispasswordtype: false,
       iswebsite: false,
       passwordtype: 'Generic',
-      website: 'Tripadvisor',
+      website: '',
       username: '',
       password: '',
       location: '',
@@ -104,8 +104,8 @@ class SettingsLayout extends Component {
           Cell: props => <p className="text-muted">*************</p>
         },
         {
-          Header: "Website",
-          accessor: "website",
+          Header: "Password Type",
+          accessor: "passwordtype",
           Cell: props => <p className="text-muted">{props.value}</p>
         },
         {
@@ -197,7 +197,7 @@ class SettingsLayout extends Component {
       editmodal: !this.state.editmodal,
       modaltype: 'add',
       passwordtype: 'Generic',
-      website: 'Tripadvisor',
+      website: '',
       username: '',
       password: '',
       location: '',
@@ -375,6 +375,25 @@ class SettingsLayout extends Component {
                                   Generic
                                 </DropdownItem>
                                 <DropdownItem divider />
+                                <DropdownItem value="Tripadvisor" onClick={this.changepasswordtype}>
+                                  Tripadvisor
+                                </DropdownItem>
+                                <DropdownItem value="Yelp" onClick={this.changepasswordtype}>
+                                  Yelp
+                                </DropdownItem>
+                                <DropdownItem value="Opentable" onClick={this.changepasswordtype}>
+                                  Opentable
+                                </DropdownItem>
+                                <DropdownItem value="Zomato" onClick={this.changepasswordtype}>
+                                  Zomato
+                                </DropdownItem>
+                                <DropdownItem value="Thefork" onClick={this.changepasswordtype}>
+                                  Thefork
+                                </DropdownItem>
+                                <DropdownItem value="Quandoo" onClick={this.changepasswordtype}>
+                                  Quandoo
+                                </DropdownItem>
+                                <DropdownItem divider />
                                 <DropdownItem value="Google Auth" onClick={this.changepasswordtype}>
                                   Google Auth
                                 </DropdownItem>
@@ -386,7 +405,7 @@ class SettingsLayout extends Component {
                           </AvGroup>
                         </Colxx>
 
-                        <Colxx sm={12}>
+                        {/* <Colxx sm={12}>
                           <AvGroup className="modal_select_form_group ">
                             <Label className="av-label modal_select_form_label" for="add_website">
                               Website
@@ -414,7 +433,7 @@ class SettingsLayout extends Component {
                               </DropdownMenu>
                             </Dropdown>
                           </AvGroup>
-                        </Colxx>
+                        </Colxx> */}
                         <Colxx sm={12}>
                           <AvGroup>
                             <Label className="av-label" for="add_username">
@@ -431,7 +450,7 @@ class SettingsLayout extends Component {
                           <AvGroup>
                             <Label className="av-label" for="add_password">
                               Password
-                            </Label>w
+                            </Label>
                             
                             <AvInput name="testit" type="password" id="add_password" onChange={this.changepassword} value={this.state.password} required />
                             <AvFeedback>
