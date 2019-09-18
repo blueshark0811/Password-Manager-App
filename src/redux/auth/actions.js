@@ -9,10 +9,42 @@ import {
   UPDATE_USER,
   UPDATE_USER_SUCCESS,
   DELETE_USER,
-  DELETE_USER_SUCCESS
-
-
+  DELETE_USER_SUCCESS,
+  CREATE_PIN,
+  CREATE_PIN_SUCCESS,
+  UPDATE_PIN,
+  UPDATE_PIN_SUCCESS,
+  GET_PIN,
+  GET_PIN_SUCCESS
 } from 'Constants/actionTypes';
+
+export const createPinSuccess = (pin) => ({
+  type: CREATE_PIN_SUCCESS,
+  payload: pin
+});
+export const createPin = (pin) => ({
+  type: CREATE_PIN,
+  payload: pin
+});
+
+export const updatePin = (pin) => ({
+  type: UPDATE_PIN,
+  payload: pin
+});
+
+export const updatePinSuccess = (pin) => ({
+  type: UPDATE_PIN_SUCCESS,
+  payload: pin
+});
+
+export const getPin = () => ({
+  type: GET_PIN
+});
+
+export const getPinSuccess = (pin) => ({
+  type: GET_PIN_SUCCESS,
+  payload: pin
+});
 
 export const deleteUser = (user, history) => ({
   type: DELETE_USER,

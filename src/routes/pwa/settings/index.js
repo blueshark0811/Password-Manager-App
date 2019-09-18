@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import IntlMessages from "Util/IntlMessages";
+import PinInput from "react-pin-input";
 import { 
   Label,
   FormGroup,
@@ -12,7 +13,7 @@ import {
   Jumbotron,
   Modal,
   ModalHeader,
-  ModalBody,
+  ModalBody,  
   ModalFooter,
   Dropdown,
   DropdownToggle,
@@ -33,34 +34,18 @@ import {
   registerUser,
   getUserlist,
   updateUser,
-  deleteUser
+  deleteUser,
+  createPin,
+  updatePin,
+  getPin  
 } from "Redux/actions";
 
-const dataTableData = [
-  {
-    "location": "Sydney",
-    "username": "jason.123@gmail.com",
-    "password": "123",
-    "website": "Tripadvisor"
-  },
-  {
-    "location": "Perth",
-    "username": "blueshark0811@gmail.com",
-    "password": "123",
-    "website": "Yelp"
-  },
-  {
-    "location": "Sydney",
-    "username": "jason.123@gmail.com",
-    "password": "123",
-    "website": "Quandoo"
-  },
-];
 let  dataTableColumns;
 class SettingsLayout extends Component {
    constructor(props) {
     super(props);
     this.state = {
+      createpinmodal: false,
       deletemodal: false,
       editmodal: false,
       ispasswordtype: false,
@@ -73,7 +58,10 @@ class SettingsLayout extends Component {
       _id: '',
       data: [],
       loading: true,
-      modaltype: ''
+      modaltype: '',
+      pin1: '',
+      pin2: '',
+      pin: ''
     };
     this.submitUser = this.submitUser.bind(this);
     this.edittoggle = this.edittoggle.bind(this);
@@ -90,8 +78,15 @@ class SettingsLayout extends Component {
 
     this.deletepassword = this.deletepassword.bind(this);
     this.deletetoggle = this.deletetoggle.bind(this);
-    this.props.getUserlist();
 
+    this.createpin = this.createpin.bind(this);
+    this.createpintoggle = this.createpintoggle.bind(this);
+
+    this.onChangePin1Create = this.onChangePin1Create.bind(this);
+    this.onChangePin2Create = this.onChangePin2Create.bind(this);
+
+    this.props.getUserlist();
+    this.props.getPin();
     dataTableColumns = [
         {
           Header: "Location",
@@ -123,6 +118,40 @@ class SettingsLayout extends Component {
           </div>
         }
     ];
+  }
+
+  onChangePin1Create(val) {
+    this.setState({
+      pin1: val
+    });
+  }
+  onChangePin2Create(val) {
+    this.setState({
+      pin2: val
+    });
+  }
+  createpintoggle() {
+    this.setState({
+      createpinmodal: !this.state.createpinmodal,
+    });
+  }
+  createpin() {
+    if(this.state.pin1 == this.state.pin2){
+      // alert(this.state.pin1);
+      this.props.createPin({username: 'admin', pin: this.state.pin1});
+      this.setState({
+        createpinmodal: !this.state.createpinmodal,
+      });
+    }
+    else if(this.state.pin1 == this.state.pin) {
+      this.props.updatePin({username: 'admin', pin: this.state.pin2});
+      this.setState({
+        createpinmodal: !this.state.createpinmodal,
+      });
+    }
+    else {
+      
+    }
   }
   ondelete(id) {
     
@@ -232,9 +261,10 @@ class SettingsLayout extends Component {
     }));
   }
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps.userList);
+    console.log('1111111111111111111111111', nextProps);
     this.setState(prevState => ({
       data: nextProps.userList,
+      pin: nextProps.pin,
       loading: false
     }));
   }
@@ -243,9 +273,10 @@ class SettingsLayout extends Component {
       <Fragment>
         <Row>
           <Colxx xxs="12">
+          
               <h1>Password Management</h1>
-              <Button color="primary" className="mb-2 create-pin">
-                  Create Pin
+              <Button color="primary" className="mb-2 create-pin"  onClick={this.createpintoggle}>
+                  {this.state.pin == '' ? 'Create Pin': 'Update Pin' }
               </Button>
             <Separator className="mb-5" />
           </Colxx>
@@ -278,6 +309,39 @@ class SettingsLayout extends Component {
                         Ok
                       </Button>{" "}
                       <Button color="secondary" onClick={this.deletetoggle}>
+                        Cancel
+                      </Button>
+                    </ModalFooter>
+                  </Modal>
+                  <Modal isOpen={this.state.createpinmodal} toggle={this.createpintoggle}>
+                    <ModalHeader toggle={this.createpintoggle}>
+                      {this.state.pin == '' ? 'Create Pin': 'Update Pin' }
+                    </ModalHeader>
+                    <ModalBody>
+                      <h2 className="pin-title">{this.state.pin == '' ? 'Enter your Pin': 'Enter your Old Pin' }</h2>
+                      <PinInput
+                        length={4}
+                        focus
+                        secret
+                        ref={p => (this.createpin1 = p)}
+                        type="text"
+                        onChange={this.onChangePin1Create}
+                      />
+                      <h2 className="pin-title">{this.state.pin == '' ? 'Re-Enter your Pin': 'Enter your New Pin' }</h2>
+                      <PinInput
+                        length={4}
+                        focus
+                        secret
+                        ref={p => (this.createpin2 = p)}
+                        type="text"
+                        onChange={this.onChangePin2Create}
+                      />
+                    </ModalBody>
+                    <ModalFooter>
+                      <Button color="primary" onClick={this.createpin}>
+                        Save
+                      </Button>{" "}
+                      <Button color="secondary" onClick={this.createpintoggle}>
                         Cancel
                       </Button>
                     </ModalFooter>
@@ -413,8 +477,8 @@ class SettingsLayout extends Component {
   }
 }
 const mapStateToProps = ({ authUser }) => {
-  const { user, userList, loading } = authUser;
-  return { user, userList, loading };
+  const { user, userList, loading, pin } = authUser;
+  return { user, userList, loading, pin };
 };
 
 export default connect(
@@ -423,6 +487,9 @@ export default connect(
     registerUser,
     getUserlist,
     updateUser,
-    deleteUser
+    deleteUser,
+    createPin,
+    updatePin,
+    getPin
   }
 )(SettingsLayout);

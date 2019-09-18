@@ -9,13 +9,20 @@ import {
   UPDATE_USER,
   UPDATE_USER_SUCCESS,
   DELETE_USER,
-  DELETE_USER_SUCCESS
+  DELETE_USER_SUCCESS,
+  UPDATE_PIN, 
+  UPDATE_PIN_SUCCESS,
+  CREATE_PIN,
+  CREATE_PIN_SUCCESS,
+  GET_PIN,
+  GET_PIN_SUCCESS
 } from "Constants/actionTypes";
 
 const INIT_STATE = {
   user: localStorage.getItem("user_id"),
   loading: false,
-  userList: []
+  userList: [],
+  pin: ''
 };
 
 export default (state = INIT_STATE, action) => {
@@ -34,10 +41,22 @@ export default (state = INIT_STATE, action) => {
           break;
         }
       return { ...state, userList: newList, loading: true };
+    case UPDATE_PIN:
+      return { ...state };
+    case UPDATE_PIN_SUCCESS:
+      console.log('here is pin', action.payload);
+      return { ...state, pin: action.payload.pin};
+    case CREATE_PIN:
+      return { ...state };
+    case CREATE_PIN_SUCCESS:
+      return { ...state, pin: action.payload.pin};
+    case GET_PIN:
+      return { ...state };
+    case GET_PIN_SUCCESS:
+      return { ...state, pin: action.payload.pin};
     case UPDATE_USER:
       return { ...state };
     case UPDATE_USER_SUCCESS:
-      console.log('here', action.payload);
       newList = state.userList;
       for(let index in newList) 
         if(newList[index]._id == action.payload._id){

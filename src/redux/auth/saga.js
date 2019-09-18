@@ -7,7 +7,10 @@ import {
     LOGOUT_USER,
     GET_USER_LIST,
     UPDATE_USER,
-    DELETE_USER
+    DELETE_USER,
+    CREATE_PIN,
+    UPDATE_PIN,
+    GET_PIN
 } from 'Constants/actionTypes';
 
 import {
@@ -15,7 +18,10 @@ import {
     registerUserSuccess,
     getUserlistSuccess,
     updateUserSuccess,
-    deleteUserSuccess
+    deleteUserSuccess,
+    createPinSuccess,
+    updatePinSuccess,
+    getPinSuccess
 } from './actions';
 import axios from 'axios';
 const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:4040' : 'http://45.63.27.167:4040'
@@ -156,6 +162,70 @@ function* delete_user({ payload }) {
     }
 }
 
+
+const createpinAsync = async (payload) => {
+    return await axios.post(`${API_URL}/api/users/pin/create`, payload)
+    .then( createdPin => createdPin )
+    .catch( error => error);
+}
+
+function* create_pin({ payload }) {
+    try {
+        const createdPin = yield call(createpinAsync, payload);
+        if (createdPin.data) {
+            yield put(createPinSuccess(createdPin.data));
+        } else {
+            // catch throw
+            console.log('get user list failed')
+        }
+    } catch (error) {
+        // catch throw
+        console.log('register error : ', error)
+    }
+}
+const updatepinAsync = async (payload) => {
+    return await axios.post(`${API_URL}/api/users/pin/update`, payload)
+    .then( updatepin => updatepin )
+    .catch( error => error);
+}
+
+function* update_pin({ payload }) {
+    console.log(payload);
+    try {
+        const updatepin = yield call(updatepinAsync, payload);
+        if (updatepin.data) {
+            yield put(updatePinSuccess(updatepin.data));
+        } else {
+            // catch throw
+            console.log('get user list failed')
+        }
+    } catch (error) {
+        // catch throw
+        console.log('register error : ', error)
+    }
+}
+
+const getpinAsync = async () => {
+    return await axios.get(`${API_URL}/api/users/pin/get`)
+    .then( pin => pin )
+    .catch( error => error);
+}
+
+function* get_pin() {
+    try {
+        const pin = yield call(getpinAsync);
+        if (pin.data) {
+            yield put(getPinSuccess(pin.data));
+        } else {
+            // catch throw
+            console.log('get user list failed')
+        }
+    } catch (error) {
+        // catch throw
+        console.log('register error : ', error)
+    }
+}
+
 export function* watchRegisterUser() {
     yield takeEvery(REGISTER_USER, registerWithEmailPassword);
 }
@@ -180,6 +250,17 @@ export function* watchDeleteUser() {
     yield takeEvery(DELETE_USER, delete_user);
 }
 
+export function* watchCreatePin() {
+    yield takeEvery(CREATE_PIN, create_pin);
+}
+
+export function* watchUpdatePin() {
+    yield takeEvery(UPDATE_PIN, update_pin);
+}
+
+export function* watchGetPin() {
+    yield takeEvery(GET_PIN, get_pin);
+}
 export default function* rootSaga() {
     yield all([
         fork(watchLoginUser),
@@ -187,7 +268,9 @@ export default function* rootSaga() {
         fork(watchRegisterUser),
         fork(watchGetUserList),
         fork(watchUpdateUser),
-        fork(watchDeleteUser)
-
+        fork(watchDeleteUser),
+        fork(watchCreatePin),
+        fork(watchUpdatePin),
+        fork(watchGetPin)
     ]);
 }
