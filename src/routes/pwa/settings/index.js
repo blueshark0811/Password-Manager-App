@@ -187,8 +187,9 @@ class SettingsLayout extends Component {
     });
   }
   submitUser() {
+    var url = process.env.NODE_ENV == 'development' ? 'http://localhost:4040':'http://45.63.27.167:4040';
     if(this.state.passwordtype == 'Google Auth' || this.state.passwordtype == 'Facebook Auth') {
-      location.href='http://localhost:4040/auth/facebook';
+      location.href = url + '/auth/facebook';
     }
     if(this.state.location != '' && this.state.password != '' && this.state.username != ''){
       if(this.state.modaltype == 'add'){
@@ -503,7 +504,7 @@ class SettingsLayout extends Component {
                         <Colxx sm={12}>
                           <FormGroup>
                             <Button color="primary" id="forms.submit" onClick={this.submitUser}>
-                              {(this.state.passwordtype == 'Google Auth' || this.state.passwordtype == 'Facebook Auth' ) ? 'Sign In with ' + this.state.passwordtype.split(' ')[0] : (this.state.modaltype == 'add' ? 'Add': 'Update')}
+                              {(this.state.passwordtype == 'Google Auth' || this.state.passwordtype == 'Facebook Auth' ) ? 'Add your ' + this.state.passwordtype.split(' ')[0] + ' business page': (this.state.modaltype == 'add' ? 'Add': 'Update')}
                             </Button>{" "}
                             <Button color="secondary" onClick={this.edittoggle}>
                               Cancel
