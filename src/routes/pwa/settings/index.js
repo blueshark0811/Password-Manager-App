@@ -30,6 +30,8 @@ import {
 } from "availity-reactstrap-validation";
 import { Colxx, Separator } from "Components/CustomBootstrap";
 import DataTablePagination from "Components/DataTables/pagination";
+import { ToastsContainer, ToastsStore} from 'react-toasts';
+
 import { 
   registerUser,
   getUserlist,
@@ -37,7 +39,8 @@ import {
   deleteUser,
   createPin,
   updatePin,
-  getPin  
+  getPin,
+  resetPin
 } from "Redux/actions";
 
 let  dataTableColumns;
@@ -84,7 +87,7 @@ class SettingsLayout extends Component {
 
     this.onChangePin1Create = this.onChangePin1Create.bind(this);
     this.onChangePin2Create = this.onChangePin2Create.bind(this);
-
+    this.onResetPin = this.onResetPin.bind(this);
     this.props.getUserlist();
     this.props.getPin();
     dataTableColumns = [
@@ -139,19 +142,23 @@ class SettingsLayout extends Component {
     if(this.state.pin1 == this.state.pin2){
       // alert(this.state.pin1);
       this.props.createPin({username: 'admin', pin: this.state.pin1});
+      ToastsStore.success('PIN is created Successfully.');
       this.setState({
         createpinmodal: !this.state.createpinmodal,
       });
+
     }
     else if(this.state.pin1 == this.state.pin) {
       this.props.updatePin({username: 'admin', pin: this.state.pin2});
+      ToastsStore.success('PIN is updated Successfully.');
+
       this.setState({
         createpinmodal: !this.state.createpinmodal,
       });
     }
-    else {
-      
-    }
+    else 
+      ToastsStore.error('Enter Pin correctly.');
+    
   }
   ondelete(id) {
     
@@ -180,16 +187,25 @@ class SettingsLayout extends Component {
     });
   }
   submitUser() {
+    if(this.state.passwordtype == 'Google Auth' || this.state.passwordtype == 'Facebook Auth') {
+      location.href='http://localhost:4040/auth/facebook';
+    }
     if(this.state.location != '' && this.state.password != '' && this.state.username != ''){
-      if(this.state.modaltype == 'add')
+      if(this.state.modaltype == 'add'){
         this.props.registerUser(this.state, this.props.history);
-      else
+        ToastsStore.success('User is created Successfully.');
+      }
+      else {
         this.props.updateUser(this.state);
-      
+        ToastsStore.success('User is updated Successfully.');
+      }
       this.setState({
         editmodal: !this.state.editmodal
       });
     }
+    else 
+      ToastsStore.error('All fields are required.');
+
   }
       
   edittoggle() {
@@ -212,6 +228,9 @@ class SettingsLayout extends Component {
   deletepassword() {
     console.log('here is selectedpassword', this.state._id);
     this.props.deleteUser(this.state._id, this.props.history)
+    ToastsStore.success('User is deleted Successfully.');
+
+
     this.setState({
       deletemodal: !this.state.deletemodal,
       _id: ''
@@ -260,8 +279,11 @@ class SettingsLayout extends Component {
       website: currentwebsite
     }));
   }
+  onResetPin() {
+    this.props.resetPin();
+    ToastsStore.success('PIN is reseted Successfully.');
+  }
   componentWillReceiveProps(nextProps) {
-    console.log('1111111111111111111111111', nextProps);
     this.setState(prevState => ({
       data: nextProps.userList,
       pin: nextProps.pin,
@@ -344,6 +366,12 @@ class SettingsLayout extends Component {
                       <Button color="secondary" onClick={this.createpintoggle}>
                         Cancel
                       </Button>
+                      {this.state.pin == '' ? '': 
+                      <Button color="blue" onClick={this.onResetPin}>
+                        Reset
+                      </Button>
+                       }
+                      
                     </ModalFooter>
                   </Modal>
 
@@ -434,47 +462,48 @@ class SettingsLayout extends Component {
                             </Dropdown>
                           </AvGroup>
                         </Colxx> */}
-                        <Colxx sm={12}>
-                          <AvGroup>
-                            <Label className="av-label" for="add_username">
-                              Username
-                            </Label>
-                            <AvInput className="form-control" name="rank" id="add_username" onChange={this.changeusername} value={this.state.username} required />
-                            <AvFeedback>
-                              Username is required.
-                            </AvFeedback>
-                          </AvGroup>
-                        </Colxx>
+                        { (this.state.passwordtype != 'Google Auth' && this.state.passwordtype != 'Facebook Auth') ?
+                          <div><Colxx sm={12}>
+                            <AvGroup>
+                              <Label className="av-label" for="add_username">
+                                Username
+                              </Label>
+                              <AvInput className="form-control" name="rank" id="add_username" onChange={this.changeusername} value={this.state.username} required />
+                              <AvFeedback>
+                                Username is required.
+                              </AvFeedback>
+                            </AvGroup>
+                          </Colxx>
 
-                        <Colxx sm={12}>
-                          <AvGroup>
-                            <Label className="av-label" for="add_password">
-                              Password
-                            </Label>
-                            
-                            <AvInput name="testit" type="password" id="add_password" onChange={this.changepassword} value={this.state.password} required />
-                            <AvFeedback>
-                              Password is required.
-                            </AvFeedback>
-                          </AvGroup>
-                        </Colxx>
+                          <Colxx sm={12}>
+                            <AvGroup>
+                              <Label className="av-label" for="add_password">
+                                Password
+                              </Label>
+                              
+                              <AvInput name="testit" type="password" id="add_password" onChange={this.changepassword} value={this.state.password} required />
+                              <AvFeedback>
+                                Password is required.
+                              </AvFeedback>
+                            </AvGroup>
+                          </Colxx>
 
-                        <Colxx sm={12}>
-                          <AvGroup>
-                            <Label className="av-label" for="add_location">
-                              Location
-                            </Label>
-                            <AvInput name="rank" id="add_location" onChange={this.changelocation} value={this.state.location} required />
-                            <AvFeedback>
-                              Location is required.
-                            </AvFeedback>
-                          </AvGroup>
-                        </Colxx>
-
+                          <Colxx sm={12}>
+                            <AvGroup>
+                              <Label className="av-label" for="add_location">
+                                Location
+                              </Label>
+                              <AvInput name="rank" id="add_location" onChange={this.changelocation} value={this.state.location} required />
+                              <AvFeedback>
+                                Location is required.
+                              </AvFeedback>
+                            </AvGroup>
+                          </Colxx></div> : <Colxx sm={12}></Colxx>
+                        }
                         <Colxx sm={12}>
                           <FormGroup>
                             <Button color="primary" id="forms.submit" onClick={this.submitUser}>
-                              {this.state.modaltype == 'add' ? 'Add': 'Update'}
+                              {(this.state.passwordtype == 'Google Auth' || this.state.passwordtype == 'Facebook Auth' ) ? 'Sign In with ' + this.state.passwordtype.split(' ')[0] : (this.state.modaltype == 'add' ? 'Add': 'Update')}
                             </Button>{" "}
                             <Button color="secondary" onClick={this.edittoggle}>
                               Cancel
@@ -491,6 +520,8 @@ class SettingsLayout extends Component {
             </Card>
           </Colxx>
         </Row>
+        <ToastsContainer store={ToastsStore}/>
+
       </Fragment>
     );
   }
@@ -509,6 +540,7 @@ export default connect(
     deleteUser,
     createPin,
     updatePin,
-    getPin
+    getPin,
+    resetPin
   }
 )(SettingsLayout);

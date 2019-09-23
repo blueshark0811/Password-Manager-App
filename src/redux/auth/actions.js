@@ -15,8 +15,19 @@ import {
   UPDATE_PIN,
   UPDATE_PIN_SUCCESS,
   GET_PIN,
-  GET_PIN_SUCCESS
+  GET_PIN_SUCCESS,
+  RESET_PIN,
+  RESET_PIN_SUCCESS
 } from 'Constants/actionTypes';
+
+
+export const resetPinSuccess = () => ({
+  type: RESET_PIN_SUCCESS,
+});
+
+export const resetPin = () => ({
+  type: RESET_PIN,
+});
 
 export const createPinSuccess = (pin) => ({
   type: CREATE_PIN_SUCCESS,

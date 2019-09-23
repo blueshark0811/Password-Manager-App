@@ -10,7 +10,8 @@ import {
     DELETE_USER,
     CREATE_PIN,
     UPDATE_PIN,
-    GET_PIN
+    GET_PIN,
+    RESET_PIN
 } from 'Constants/actionTypes';
 
 import {
@@ -21,7 +22,8 @@ import {
     deleteUserSuccess,
     createPinSuccess,
     updatePinSuccess,
-    getPinSuccess
+    getPinSuccess,
+    resetPinSuccess
 } from './actions';
 import axios from 'axios';
 const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:4040' : 'http://45.63.27.167:4040'
@@ -128,7 +130,7 @@ function* update_user(user) {
             yield put(updateUserSuccess(updateduser.data));
         } else {
             // catch throw
-            console.log('get user list failed')
+            console.log('update failed')
         }
     } catch (error) {
         // catch throw
@@ -154,7 +156,7 @@ function* delete_user({ payload }) {
             history.push('/');
         } else {
             // catch throw
-            console.log('get user list failed')
+            console.log('delete user failed')
         }
     } catch (error) {
         // catch throw
@@ -176,7 +178,7 @@ function* create_pin({ payload }) {
             yield put(createPinSuccess(createdPin.data));
         } else {
             // catch throw
-            console.log('get user list failed')
+            console.log('create pin failed')
         }
     } catch (error) {
         // catch throw
@@ -197,7 +199,7 @@ function* update_pin({ payload }) {
             yield put(updatePinSuccess(updatepin.data));
         } else {
             // catch throw
-            console.log('get user list failed')
+            console.log('update pin failed')
         }
     } catch (error) {
         // catch throw
@@ -218,7 +220,29 @@ function* get_pin() {
             yield put(getPinSuccess(pin.data));
         } else {
             // catch throw
-            console.log('get user list failed')
+            console.log('get pin failed')
+        }
+    } catch (error) {
+        // catch throw
+        console.log('register error : ', error)
+    }
+}
+
+
+const resetpinAsync = async () => {
+    return await axios.delete(`${API_URL}/api/users/pin/reset`)
+    .then( pin => pin )
+    .catch( error => error);
+}
+
+function* reset_pin() {
+    try {
+        const pin = yield call(resetpinAsync);
+        if (pin.data) {
+            yield put(resetPinSuccess());
+        } else {
+            // catch throw
+            console.log('reset pin list failed')
         }
     } catch (error) {
         // catch throw
@@ -261,6 +285,11 @@ export function* watchUpdatePin() {
 export function* watchGetPin() {
     yield takeEvery(GET_PIN, get_pin);
 }
+
+export function* watchResetPin() {
+    yield takeEvery(RESET_PIN, reset_pin);
+}
+
 export default function* rootSaga() {
     yield all([
         fork(watchLoginUser),
@@ -271,6 +300,7 @@ export default function* rootSaga() {
         fork(watchDeleteUser),
         fork(watchCreatePin),
         fork(watchUpdatePin),
-        fork(watchGetPin)
+        fork(watchGetPin),
+        fork(watchResetPin)
     ]);
 }

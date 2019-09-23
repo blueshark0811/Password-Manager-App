@@ -15,7 +15,9 @@ import {
   CREATE_PIN,
   CREATE_PIN_SUCCESS,
   GET_PIN,
-  GET_PIN_SUCCESS
+  GET_PIN_SUCCESS,
+  RESET_PIN,
+  RESET_PIN_SUCCESS
 } from "Constants/actionTypes";
 
 const INIT_STATE = {
@@ -41,6 +43,10 @@ export default (state = INIT_STATE, action) => {
           break;
         }
       return { ...state, userList: newList, loading: true };
+    case RESET_PIN:
+      return { ...state };
+    case RESET_PIN_SUCCESS:
+      return { ...state, pin: ''};
     case UPDATE_PIN:
       return { ...state };
     case UPDATE_PIN_SUCCESS:

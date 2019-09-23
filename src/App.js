@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import App from 'Containers/App';
 import { configureStore } from 'Redux/store';
+import {ToastsContainer, ToastsStore} from 'react-toasts';
 
 const MainApp = () => (
 	<Provider store={configureStore()}>
@@ -14,6 +15,7 @@ const MainApp = () => (
 					<Route path="/" component={App} />
 				</Switch>
 			</Router>
+
 	</Provider>
 );
 

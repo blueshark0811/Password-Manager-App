@@ -8,14 +8,18 @@ export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
 export const UPDATE_USER = 'UPDATE_USER';
 export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS';
 
+
 export const CREATE_PIN = 'CREATE_PIN';
 export const CREATE_PIN_SUCCESS = 'CREATE_PIN_SUCCESS';
+
 export const GET_PIN = 'GET_PIN';
 export const GET_PIN_SUCCESS = 'GET_PIN_SUCCESS';
+
 export const UPDATE_PIN = 'UPDATE_PIN';
 export const UPDATE_PIN_SUCCESS = 'UPDATE_PIN_SUCCESS';
 
-
+export const RESET_PIN = 'RESET_PIN';
+export const RESET_PIN_SUCCESS = 'RESET_PIN_SUCCESS';
 
 export const GET_USER_LIST = 'GET_USER_LIST';
 export const GET_USER_LIST_SUCCESS = 'GET_USER_LIST_SUCCESS';
