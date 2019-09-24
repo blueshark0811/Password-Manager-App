@@ -4,7 +4,7 @@ import { Route, withRouter, Switch,Redirect } from 'react-router-dom';
 import TopNav from 'Containers/TopNav'
 import Sidebar from 'Containers/Sidebar';
 
-import pwa from './pwa';
+import settings from './pwa/settings';
 import secondMenu from './second-menu';
 
 import { connect } from 'react-redux';
@@ -23,7 +23,7 @@ class MainApp extends Component {
 				<main>
 					<div className="container-fluid">
 						<Switch>
-							<Route path={`${match.url}/pwa`} component={pwa} />
+							<Route path={`${match.url}/main`} component={settings} />
 							<Route path={`${match.url}/second-menu`} component={secondMenu} />
 							<Redirect to="/error" />
 						</Switch>

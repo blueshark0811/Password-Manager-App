@@ -5,8 +5,7 @@ import settings from './settings';
 
 export default ({ match }) => (
     <Switch>
-        <Redirect exact from={`${match.url}/`} to={`${match.url}/settings`} />
-        <Route path={`${match.url}/settings`} component={settings} />
+        <Route path={`${match.url}/`} component={settings} />
         <Redirect to="/error" />
     </Switch>
 );
