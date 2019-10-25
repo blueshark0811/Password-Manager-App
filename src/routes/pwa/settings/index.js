@@ -188,8 +188,11 @@ class SettingsLayout extends Component {
   }
   submitUser() {
     var url = process.env.NODE_ENV == 'development' ? 'http://localhost:4040':'http://45.63.27.167:4040';
-    if(this.state.passwordtype == 'Google Auth' || this.state.passwordtype == 'Facebook Auth') {
+    if(this.state.passwordtype == 'Facebook Auth') {
       location.href = url + '/auth/facebook';
+    }
+    else if(this.state.passwordtype == 'Google Auth'){
+      location.href = url + '/auth/google';
     }
     if(this.state.location != '' && this.state.password != '' && this.state.username != ''){
       if(this.state.modaltype == 'add'){
