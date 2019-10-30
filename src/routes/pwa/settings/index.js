@@ -187,7 +187,7 @@ class SettingsLayout extends Component {
     });
   }
   submitUser() {
-    var url = process.env.NODE_ENV == 'development' ? 'http://localhost:4040':'http://45.63.27.167:4040';
+    var url = process.env.NODE_ENV === 'development' ? 'https://localhost:4040/apiusers/' : 'https://api.restaurantreview.io/pm/users';
     if(this.state.passwordtype == 'Facebook Auth') {
       location.href = url + '/auth/facebook';
     }

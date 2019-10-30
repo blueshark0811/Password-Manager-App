@@ -26,7 +26,7 @@ import {
     resetPinSuccess
 } from './actions';
 import axios from 'axios';
-const API_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:4040' : 'http://45.63.27.167:4040'
+const API_URL = process.env.NODE_ENV === 'development' ? 'https://localhost:4040/api/users/' : 'https://api.restaurantreview.io/pm/users/'
 
 const loginWithEmailPasswordAsync = async (email, password) =>
     await auth.signInWithEmailAndPassword(email, password)
@@ -56,7 +56,7 @@ function* loginWithEmailPassword({ payload }) {
 }
 
 const registerWithEmailPasswordAsync = async (user) =>
-    await axios.post(`${API_URL}/api/users/`, user)
+    await axios.post(`${API_URL}`, user)
     .then( authUser => authUser )
     .catch( error => error);
 
@@ -94,7 +94,7 @@ function* logout({payload}) {
 }
 
 const getuserlistAsync = async (user) =>
-    await axios.get(`${API_URL}/api/users/`)
+    await axios.get(`${API_URL}`)
     .then( userlist => userlist )
     .catch( error => error);
 
@@ -118,7 +118,7 @@ const updateuserAsync = async (user) => {
     let user_id = user._id;
     delete user._id;
     delete user.data;
-    return await axios.put(`${API_URL}/api/users/${user_id}`, user)
+    return await axios.put(`${API_URL}${user_id}`, user)
     .then( updateduser => updateduser )
     .catch( error => error);
 }
@@ -140,7 +140,7 @@ function* update_user(user) {
 
 
 const deleteuserAsync = async (id) => {
-    return await axios.delete(`${API_URL}/api/users/${id}`)
+    return await axios.delete(`${API_URL}${id}`)
     .then( deleteuser => deleteuser )
     .catch( error => error);
 }
@@ -166,7 +166,7 @@ function* delete_user({ payload }) {
 
 
 const createpinAsync = async (payload) => {
-    return await axios.post(`${API_URL}/api/users/pin/create`, payload)
+    return await axios.post(`${API_URL}pin/create`, payload)
     .then( createdPin => createdPin )
     .catch( error => error);
 }
@@ -186,7 +186,7 @@ function* create_pin({ payload }) {
     }
 }
 const updatepinAsync = async (payload) => {
-    return await axios.post(`${API_URL}/api/users/pin/update`, payload)
+    return await axios.post(`${API_URL}pin/update`, payload)
     .then( updatepin => updatepin )
     .catch( error => error);
 }
@@ -208,7 +208,7 @@ function* update_pin({ payload }) {
 }
 
 const getpinAsync = async () => {
-    return await axios.get(`${API_URL}/api/users/pin/get`)
+    return await axios.get(`${API_URL}pin/get`)
     .then( pin => pin )
     .catch( error => error);
 }
@@ -230,7 +230,7 @@ function* get_pin() {
 
 
 const resetpinAsync = async () => {
-    return await axios.delete(`${API_URL}/api/users/pin/reset`)
+    return await axios.delete(`${API_URL}pin/reset`)
     .then( pin => pin )
     .catch( error => error);
 }
